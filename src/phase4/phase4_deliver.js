@@ -39,7 +39,7 @@ function formatPulseTextForUI(rawText) {
   // 4. Convert Top Themes into readable UI cards
   clean = clean.replace(/^(\d+\.) (.*?) — (\d+ reviews) \| Avg: (.*?) \| (.*?)$/gm, 
     '<div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; margin-bottom: 12px; border-radius: 8px;">' +
-      '<strong style="color: #0f172a; font-size: 18px;">$1 $2</strong><br/>' +
+      '<strong style="color: #0A2540; font-size: 18px;">$1 $2</strong><br/>' +
       '<span style="color: #475569; font-size: 15px; display: inline-block; margin-top: 8px;">📊 $3 &nbsp;&nbsp;|&nbsp;&nbsp; ⭐ Avg: $4 &nbsp;&nbsp;|&nbsp;&nbsp; ⚠️ $5</span>' +
     '</div>'
   )
@@ -47,16 +47,16 @@ function formatPulseTextForUI(rawText) {
   // 5. Convert Action Ideas into styled cards (safe for email clients)
   // Fix: Exclude newlines (\r\n) from the match so it only captures a single line.
   clean = clean.replace(/^(\d+)\. ([^\n\r—<]+)$/gm, 
-    '<div style="background: #ffffff; border: 1px solid #eaeaea; padding: 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
-      '<div style="color: #00D09C; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Action Idea $1</div>' +
+    '<div style="background: #ffffff; border: 1px solid #eaeaea; padding: 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border-left: 4px solid #2563EB;">' +
+      '<div style="color: #2563EB; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Action Idea $1</div>' +
       '<div style="color: #334155; font-size: 17px; line-height: 1.6;">$2</div>' +
     '</div>'
   )
 
   // 6. Convert the [Category] "Quote" lines into beautiful HTML blockquotes
   clean = clean.replace(/^\[(.*?)\] "(.*?)"$/gm, 
-    '<div style="background: #ffffff; border-left: 4px solid #00D09C; padding: 16px; margin-bottom: 15px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
-      '<strong style="display: block; color: #00D09C; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">$1</strong>' +
+    '<div style="background: #ffffff; border-left: 4px solid #2563EB; padding: 16px; margin-bottom: 15px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
+      '<strong style="display: block; color: #2563EB; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">$1</strong>' +
       '<span style="color: #444; font-size: 17px; font-style: italic; line-height: 1.6;">"$2"</span>' +
     '</div>'
   )
@@ -95,11 +95,11 @@ export async function createGoogleDoc(pulseText, weekLabel) {
   const htmlContent = `
     <html>
       <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <table width="100%" cellpadding="20" cellspacing="0" border="0" style="background-color: #00D09C; border-radius: 8px;">
+        <table width="100%" cellpadding="20" cellspacing="0" border="0" style="background-color: #0A2540; border-radius: 8px;">
           <tr>
             <td align="center">
               <h1 style="color: #ffffff; margin: 0; font-size: 32px;">Groww Weekly Pulse</h1>
-              <p style="color: #e6fffa; margin: 5px 0 0 0; font-size: 18px;">${weekLabel}</p>
+              <p style="color: #94A3B8; margin: 5px 0 0 0; font-size: 18px;">${weekLabel}</p>
             </td>
           </tr>
         </table>
@@ -154,20 +154,20 @@ export async function sendEmail(pulseText, weekLabel, docUrl) {
   
   const body = `
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; padding: 30px; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #eaeaea; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-      <div style="text-align: center; padding-bottom: 20px; border-bottom: 2px solid #00D09C;">
-        <h2 style="color: #00D09C; margin: 0; font-size: 24px;">Groww Weekly Pulse 📈</h2>
+      <div style="text-align: center; padding-bottom: 20px; border-bottom: 2px solid #0A2540;">
+        <h2 style="color: #0A2540; margin: 0; font-size: 24px;">Groww Weekly Pulse 📈</h2>
         <p style="color: #666; margin-top: 5px; font-size: 14px;">${weekLabel}</p>
       </div>
       
       <p style="font-size: 16px; margin-top: 25px;">Hi there,</p>
       <p style="font-size: 16px;">Here is your weekly summary of what users are saying about Groww:</p>
       
-      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #00D09C; margin: 25px 0;">
+      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #0A2540; margin: 25px 0;">
         <div style="font-family: inherit; margin: 0; font-size: 15px; line-height: 1.6;">${formattedHtml}</div>
       </div>
       
       <div style="text-align: center; margin: 35px 0 20px 0;">
-        <a href="${docUrl}" style="background-color: #00D09C; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block;">📄 Read Full Google Doc</a>
+        <a href="${docUrl}" style="background-color: #2563EB; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block;">📄 Read Full Google Doc</a>
       </div>
       
       <hr style="border: none; border-top: 1px solid #eaeaea; margin-top: 30px; margin-bottom: 20px;" />
