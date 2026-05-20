@@ -31,32 +31,33 @@ function formatPulseTextForUI(rawText) {
   clean = clean.replace(/━{40}\n?/g, '')
   
   // 3. Convert section headers into styled HTML <h2> tags
-  const h2Style = 'color: #00D09C; margin-top: 30px; margin-bottom: 15px; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;'
+  const h2Style = 'color: #00D09C; margin-top: 30px; margin-bottom: 15px; font-size: 20px; text-transform: uppercase; letter-spacing: 0.5px;'
   clean = clean.replace(/TOP THEMES THIS WEEK/g, `<h2 style="${h2Style}">Top Themes This Week</h2>`)
   clean = clean.replace(/WHAT USERS ARE SAYING \(verbatim, anonymised\)/g, `<h2 style="${h2Style}">What Users Are Saying</h2>`)
   clean = clean.replace(/ACTION IDEAS/g, `<h2 style="${h2Style}">Action Ideas</h2>`)
   
   // 4. Convert Top Themes into readable UI cards
   clean = clean.replace(/^(\d+\.) (.*?) — (\d+ reviews) \| Avg: (.*?) \| (.*?)$/gm, 
-    '<div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px;">' +
-      '<strong style="color: #0f172a; font-size: 16px;">$1 $2</strong><br/>' +
-      '<span style="color: #475569; font-size: 13px;">📊 $3 &nbsp;&nbsp;|&nbsp;&nbsp; ⭐ Avg: $4 &nbsp;&nbsp;|&nbsp;&nbsp; ⚠️ $5</span>' +
+    '<div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; margin-bottom: 12px; border-radius: 8px;">' +
+      '<strong style="color: #0f172a; font-size: 18px;">$1 $2</strong><br/>' +
+      '<span style="color: #475569; font-size: 15px; display: inline-block; margin-top: 8px;">📊 $3 &nbsp;&nbsp;|&nbsp;&nbsp; ⭐ Avg: $4 &nbsp;&nbsp;|&nbsp;&nbsp; ⚠️ $5</span>' +
     '</div>'
   )
 
   // 5. Convert Action Ideas into styled cards (safe for email clients)
-  clean = clean.replace(/^(\d+)\. ([^—<]+)$/gm, 
-    '<div style="background: #ffffff; border: 1px solid #eaeaea; padding: 15px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
-      '<div style="color: #00D09C; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">💡 Action Idea $1</div>' +
-      '<div style="color: #334155; font-size: 15px; line-height: 1.5;">$2</div>' +
+  // Fix: Exclude newlines (\r\n) from the match so it only captures a single line.
+  clean = clean.replace(/^(\d+)\. ([^\n\r—<]+)$/gm, 
+    '<div style="background: #ffffff; border: 1px solid #eaeaea; padding: 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
+      '<div style="color: #00D09C; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Action Idea $1</div>' +
+      '<div style="color: #334155; font-size: 17px; line-height: 1.6;">$2</div>' +
     '</div>'
   )
 
   // 6. Convert the [Category] "Quote" lines into beautiful HTML blockquotes
   clean = clean.replace(/^\[(.*?)\] "(.*?)"$/gm, 
-    '<div style="background: #ffffff; border-left: 4px solid #00D09C; padding: 12px 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
-      '<strong style="display: block; color: #00D09C; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">$1</strong>' +
-      '<span style="color: #444; font-size: 15px; font-style: italic;">"$2"</span>' +
+    '<div style="background: #ffffff; border-left: 4px solid #00D09C; padding: 16px; margin-bottom: 15px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
+      '<strong style="display: block; color: #00D09C; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">$1</strong>' +
+      '<span style="color: #444; font-size: 17px; font-style: italic; line-height: 1.6;">"$2"</span>' +
     '</div>'
   )
   
