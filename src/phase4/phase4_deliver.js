@@ -31,7 +31,7 @@ function formatPulseTextForUI(rawText) {
   clean = clean.replace(/━{40}\n?/g, '')
   
   // 3. Convert section headers into styled HTML <h2> tags
-  const h2Style = 'color: #00D09C; margin-top: 30px; margin-bottom: 15px; font-size: 20px; text-transform: uppercase; letter-spacing: 0.5px;'
+  const h2Style = 'color: #0A2540; font-weight: bold; margin-top: 35px; margin-bottom: 20px; font-size: 24px; text-transform: uppercase; letter-spacing: 0.5px;'
   clean = clean.replace(/TOP THEMES THIS WEEK/g, `<h2 style="${h2Style}">Top Themes This Week</h2>`)
   clean = clean.replace(/WHAT USERS ARE SAYING \(verbatim, anonymised\)/g, `<h2 style="${h2Style}">What Users Are Saying</h2>`)
   clean = clean.replace(/ACTION IDEAS/g, `<h2 style="${h2Style}">Action Ideas</h2>`)
@@ -40,10 +40,10 @@ function formatPulseTextForUI(rawText) {
   clean = clean.replace(/(<h2[^>]*>Top Themes This Week<\/h2>)([\s\S]*?)(<h2[^>]*>What Users Are Saying<\/h2>)/, (match, h2Top, content, h2What) => {
     const rows = content.replace(/^(\d+\.) (.*?) — (\d+ reviews) \| Avg: (.*?) \| (.*?)$/gm, 
       '<tr>' +
-        '<td style="padding: 14px; border-bottom: 1px solid #e2e8f0;"><strong style="color: #0A2540; font-size: 15px;">$1 $2</strong></td>' +
-        '<td style="padding: 14px; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 14px; text-align: center;">📊 $3</td>' +
-        '<td style="padding: 14px; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 14px; text-align: center;">⭐ $4</td>' +
-        '<td style="padding: 14px; border-bottom: 1px solid #e2e8f0; color: #ef4444; font-size: 14px; text-align: right; font-weight: bold;">⚠️ $5</td>' +
+        '<td style="padding: 16px; border-bottom: 1px solid #e2e8f0;"><strong style="color: #0A2540; font-size: 17px;">$1 $2</strong></td>' +
+        '<td style="padding: 16px; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 16px; text-align: center;">📊 $3</td>' +
+        '<td style="padding: 16px; border-bottom: 1px solid #e2e8f0; color: #475569; font-size: 16px; text-align: center;">⭐ $4</td>' +
+        '<td style="padding: 16px; border-bottom: 1px solid #e2e8f0; color: #ef4444; font-size: 16px; text-align: right; font-weight: bold;">⚠️ $5</td>' +
       '</tr>'
     )
     
@@ -51,10 +51,10 @@ function formatPulseTextForUI(rawText) {
       <table width="100%" cellpadding="0" cellspacing="0" style="border: 1px solid #e2e8f0; border-radius: 8px; border-collapse: separate; border-spacing: 0; margin-bottom: 25px; background: #ffffff; box-shadow: 0 1px 2px rgba(0,0,0,0.05); overflow: hidden;">
         <thead>
           <tr style="background-color: #f8fafc;">
-            <th style="padding: 14px; border-bottom: 2px solid #e2e8f0; text-align: left; color: #0A2540; font-size: 13px; text-transform: uppercase;">Theme</th>
-            <th style="padding: 14px; border-bottom: 2px solid #e2e8f0; text-align: center; color: #0A2540; font-size: 13px; text-transform: uppercase;">Volume</th>
-            <th style="padding: 14px; border-bottom: 2px solid #e2e8f0; text-align: center; color: #0A2540; font-size: 13px; text-transform: uppercase;">Rating</th>
-            <th style="padding: 14px; border-bottom: 2px solid #e2e8f0; text-align: right; color: #0A2540; font-size: 13px; text-transform: uppercase;">Critical</th>
+            <th style="padding: 16px; border-bottom: 2px solid #e2e8f0; text-align: left; color: #0A2540; font-size: 15px; text-transform: uppercase;">Theme</th>
+            <th style="padding: 16px; border-bottom: 2px solid #e2e8f0; text-align: center; color: #0A2540; font-size: 15px; text-transform: uppercase;">Volume</th>
+            <th style="padding: 16px; border-bottom: 2px solid #e2e8f0; text-align: center; color: #0A2540; font-size: 15px; text-transform: uppercase;">Rating</th>
+            <th style="padding: 16px; border-bottom: 2px solid #e2e8f0; text-align: right; color: #0A2540; font-size: 15px; text-transform: uppercase;">Critical</th>
           </tr>
         </thead>
         <tbody>
@@ -69,17 +69,17 @@ function formatPulseTextForUI(rawText) {
   // 5. Convert Action Ideas into styled cards (safe for email clients)
   // Fix: Exclude newlines (\r\n) from the match so it only captures a single line.
   clean = clean.replace(/^(\d+)\. ([^\n\r—<]+)$/gm, 
-    '<div style="background: #ffffff; border: 1px solid #eaeaea; padding: 16px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border-left: 4px solid #2563EB;">' +
-      '<div style="color: #2563EB; font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Action Idea $1</div>' +
-      '<div style="color: #334155; font-size: 17px; line-height: 1.4;">$2</div>' +
+    '<div style="background: #ffffff; border: 1px solid #eaeaea; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border-left: 4px solid #2563EB;">' +
+      '<div style="color: #2563EB; font-size: 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">💡 Action Idea $1</div>' +
+      '<div style="color: #334155; font-size: 19px; line-height: 1.4;">$2</div>' +
     '</div>'
   )
 
   // 6. Convert the [Category] "Quote" lines into beautiful HTML blockquotes
   clean = clean.replace(/^\[(.*?)\] "(.*?)"$/gm, 
-    '<div style="background: #ffffff; border-left: 4px solid #2563EB; padding: 16px; margin-bottom: 15px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
-      '<strong style="display: block; color: #2563EB; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">$1</strong>' +
-      '<span style="color: #444; font-size: 17px; font-style: italic; line-height: 1.4;">"$2"</span>' +
+    '<div style="background: #ffffff; border-left: 4px solid #2563EB; padding: 20px; margin-bottom: 15px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
+      '<strong style="display: block; color: #2563EB; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">$1</strong>' +
+      '<span style="color: #444; font-size: 19px; font-style: italic; line-height: 1.4;">"$2"</span>' +
     '</div>'
   )
   
@@ -117,16 +117,16 @@ export async function createGoogleDoc(pulseText, weekLabel) {
 
   const htmlContent = `
     <html>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <table width="100%" cellpadding="20" cellspacing="0" border="0" style="background-color: #0A2540; border-radius: 8px;">
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; font-size: 18px;">
+        <table width="100%" cellpadding="25" cellspacing="0" border="0" style="background-color: #0A2540; border-radius: 8px;">
           <tr>
             <td align="center">
-              <h1 style="color: #ffffff; margin: 0; font-size: 32px;">Groww Weekly Pulse</h1>
-              <p style="color: #94A3B8; margin: 5px 0 0 0; font-size: 18px;">${weekLabel}</p>
+              <h1 style="color: #ffffff; margin: 0; font-size: 38px;">Groww Weekly Pulse</h1>
+              <p style="color: #94A3B8; margin: 10px 0 0 0; font-size: 20px;">${weekLabel}</p>
             </td>
           </tr>
         </table>
-        <div style="margin-top: 30px; padding: 0 20px;">
+        <div style="margin-top: 40px; padding: 0 20px;">
           ${formattedHtml}
         </div>
       </body>
