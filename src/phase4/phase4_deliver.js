@@ -139,8 +139,8 @@ export async function sendEmail(pulseText, weekLabel, docUrl) {
       
       <div style="text-align: center; margin: 20px 0;">
         <p style="font-size: 14px; color: #555; margin-bottom: 10px;">Read raw reviews on:</p>
-        <a href="https://play.google.com/store/apps/details?id=in.groww.app" style="color: #00D09C; text-decoration: none; font-weight: bold; margin: 0 10px;">Google Play Store</a> | 
-        <a href="https://apps.apple.com/in/app/groww-stocks-mutual-fund-ipo/id1404877395" style="color: #00D09C; text-decoration: none; font-weight: bold; margin: 0 10px;">Apple App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.nextbillion.groww" style="color: #00D09C; text-decoration: none; font-weight: bold; margin: 0 10px;">Google Play Store</a> | 
+        <a href="https://apps.apple.com/in/app/groww-stocks-mutual-fund-ipo/id1404871703" style="color: #00D09C; text-decoration: none; font-weight: bold; margin: 0 10px;">Apple App Store</a>
       </div>
       
       <hr style="border: none; border-top: 1px solid #eaeaea; margin-top: 30px; margin-bottom: 20px;" />
