@@ -36,11 +36,21 @@ function formatPulseTextForUI(rawText) {
   clean = clean.replace(/WHAT USERS ARE SAYING \(verbatim, anonymised\)/g, `<h2 style="${h2Style}">What Users Are Saying</h2>`)
   clean = clean.replace(/ACTION IDEAS/g, `<h2 style="${h2Style}">Action Ideas</h2>`)
   
-  // 4. Replace remaining newlines with <br/>, but avoid adding <br/> right after our block tags
+  // 4. Convert the [Category] "Quote" lines into beautiful HTML blockquotes
+  clean = clean.replace(/^\[(.*?)\] "(.*?)"$/gm, 
+    '<div style="background: #ffffff; border-left: 4px solid #00D09C; padding: 12px 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
+      '<strong style="display: block; color: #00D09C; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">$1</strong>' +
+      '<span style="color: #444; font-size: 15px; font-style: italic;">"$2"</span>' +
+    '</div>'
+  )
+  
+  // 5. Replace remaining newlines with <br/>, but avoid adding <br/> right after our block tags
   clean = clean.replace(/\n/g, '<br/>')
-  // Clean up double breaks around the headers
+  // Clean up double breaks around the headers and divs
   clean = clean.replace(/<\/h2><br\/><br\/>/g, '</h2>')
   clean = clean.replace(/<\/h2><br\/>/g, '</h2>')
+  clean = clean.replace(/<\/div><br\/><br\/>/g, '</div>')
+  clean = clean.replace(/<\/div><br\/>/g, '</div>')
   
   return clean
 }

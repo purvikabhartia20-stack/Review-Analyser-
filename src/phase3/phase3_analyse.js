@@ -11,7 +11,7 @@ const LLM_TEMPERATURE = 0.2
 const MAX_BATCH       = 100   // max reviews per LLM call
 const MAX_THEMES      = 5
 const TOP_N           = 3
-const MAX_QUOTE_LEN   = 150
+const MAX_QUOTE_LEN   = 500
 const PII_REGEX       = /\b[\w.+-]+@[\w-]+\.\w+\b|\b\d{10}\b/
 
 // ─── Groq helper ──────────────────────────────────────────────────────────────
