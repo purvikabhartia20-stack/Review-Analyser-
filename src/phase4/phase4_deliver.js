@@ -1,0 +1,183 @@
+// src/phase4/phase4_deliver.js
+// Phase 4 — Deliver fully autonomously using Google APIs
+
+import 'dotenv/config'
+import { google } from 'googleapis'
+
+function getAuthClient() {
+  const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN } = process.env
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_REFRESH_TOKEN) {
+    throw new Error('[Phase 4] Missing Google Auth env variables. Make sure GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REFRESH_TOKEN are set.')
+  }
+
+  const oauth2Client = new google.auth.OAuth2(
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET
+  )
+  
+  oauth2Client.setCredentials({
+    refresh_token: GOOGLE_REFRESH_TOKEN
+  })
+  
+  return oauth2Client
+}
+
+// Helper function to format the raw pulse text into beautiful HTML
+function formatPulseTextForUI(rawText) {
+  // 1. Remove the first 5 lines (the raw text header)
+  let clean = rawText.split('\n').slice(5).join('\n')
+  
+  // 2. Remove all ASCII divider lines completely
+  clean = clean.replace(/━{40}\n?/g, '')
+  
+  // 3. Convert section headers into styled HTML <h2> tags
+  const h2Style = 'color: #00D09C; margin-top: 30px; margin-bottom: 15px; font-size: 18px; text-transform: uppercase; letter-spacing: 0.5px;'
+  clean = clean.replace(/TOP THEMES THIS WEEK/g, `<h2 style="${h2Style}">Top Themes This Week</h2>`)
+  clean = clean.replace(/WHAT USERS ARE SAYING \(verbatim, anonymised\)/g, `<h2 style="${h2Style}">What Users Are Saying</h2>`)
+  clean = clean.replace(/ACTION IDEAS/g, `<h2 style="${h2Style}">Action Ideas</h2>`)
+  
+  // 4. Replace remaining newlines with <br/>, but avoid adding <br/> right after our block tags
+  clean = clean.replace(/\n/g, '<br/>')
+  // Clean up double breaks around the headers
+  clean = clean.replace(/<\/h2><br\/><br\/>/g, '</h2>')
+  clean = clean.replace(/<\/h2><br\/>/g, '</h2>')
+  
+  return clean
+}
+
+/**
+ * Uses Google Drive API to create a Google Doc with the pulse content.
+ *
+ * @param {string} pulseText
+ * @param {string} weekLabel  e.g. "12 May 2025"
+ * @returns {string} docUrl
+ */
+export async function createGoogleDoc(pulseText, weekLabel) {
+  const auth = getAuthClient()
+  const drive = google.drive({ version: 'v3', auth })
+  
+  console.log(`[Phase 4A] Creating Google Doc for week ${weekLabel}...`)
+  
+  const fileMetadata = {
+    name: `Groww Weekly Review Pulse — ${weekLabel}`,
+    mimeType: 'application/vnd.google-apps.document'
+  }
+  
+  const formattedHtml = formatPulseTextForUI(pulseText)
+
+  const htmlContent = `
+    <html>
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px;">
+        <h1 style="color: #111; text-align: center; margin-bottom: 5px; font-size: 28px;">Groww Weekly Pulse</h1>
+        <h3 style="text-align: center; color: #777; margin-top: 0; font-weight: normal;">${weekLabel}</h3>
+        <div style="margin-top: 30px;">
+          ${formattedHtml}
+        </div>
+      </body>
+    </html>
+  `
+  
+  const media = {
+    mimeType: 'text/html',
+    body: htmlContent
+  }
+  
+  try {
+    const file = await drive.files.create({
+      resource: fileMetadata,
+      media: media,
+      fields: 'id'
+    })
+    const docUrl = `https://docs.google.com/document/d/${file.data.id}/edit`
+    console.log(`[Phase 4A] Document created: ${docUrl}`)
+    return docUrl
+  } catch (error) {
+    console.error('[Phase 4A] Error creating Google Doc:', error.message)
+    throw error
+  }
+}
+
+/**
+ * Uses Google Gmail API to send the email directly.
+ *
+ * @param {string} pulseText
+ * @param {string} weekLabel
+ * @param {string} docUrl
+ */
+export async function sendEmail(pulseText, weekLabel, docUrl) {
+  const auth = getAuthClient()
+  const gmail = google.gmail({ version: 'v1', auth })
+  
+  if (!process.env.RECIPIENT_EMAIL) {
+    throw new Error('[Phase 4B] RECIPIENT_EMAIL is not set — add it to your .env file.')
+  }
+  
+  console.log(`[Phase 4B] Sending email to ${process.env.RECIPIENT_EMAIL}...`)
+  
+  const to = process.env.RECIPIENT_EMAIL
+  const subject = `Groww Weekly Review Pulse — ${weekLabel}`
+  
+  const formattedHtml = formatPulseTextForUI(pulseText)
+  
+  const body = `
+    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; padding: 30px; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #eaeaea; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+      <div style="text-align: center; padding-bottom: 20px; border-bottom: 2px solid #00D09C;">
+        <h2 style="color: #00D09C; margin: 0; font-size: 24px;">Groww Weekly Pulse 📈</h2>
+        <p style="color: #666; margin-top: 5px; font-size: 14px;">${weekLabel}</p>
+      </div>
+      
+      <p style="font-size: 16px; margin-top: 25px;">Hi there,</p>
+      <p style="font-size: 16px;">Here is your weekly summary of what users are saying about Groww:</p>
+      
+      <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #00D09C; margin: 25px 0;">
+        <div style="font-family: inherit; margin: 0; font-size: 15px; line-height: 1.6;">${formattedHtml}</div>
+      </div>
+      
+      <div style="text-align: center; margin: 35px 0 20px 0;">
+        <a href="${docUrl}" style="background-color: #00D09C; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block;">📄 Read Full Google Doc</a>
+      </div>
+      
+      <div style="text-align: center; margin: 20px 0;">
+        <p style="font-size: 14px; color: #555; margin-bottom: 10px;">Read raw reviews on:</p>
+        <a href="https://play.google.com/store/apps/details?id=in.groww.app" style="color: #00D09C; text-decoration: none; font-weight: bold; margin: 0 10px;">Google Play Store</a> | 
+        <a href="https://apps.apple.com/in/app/groww-stocks-mutual-fund-ipo/id1404877395" style="color: #00D09C; text-decoration: none; font-weight: bold; margin: 0 10px;">Apple App Store</a>
+      </div>
+      
+      <hr style="border: none; border-top: 1px solid #eaeaea; margin-top: 30px; margin-bottom: 20px;" />
+      <p style="color: #888; font-size: 12px; text-align: center; margin: 0;">
+        Sent automatically by the Groww Review Analyser Pipeline.
+      </p>
+    </div>
+  `
+  
+  // Gmail API requires base64url encoded RFC 2822 format
+  const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString('base64')}?=`
+  const messageParts = [
+    `To: ${to}`,
+    `Subject: ${utf8Subject}`,
+    'Content-Type: text/html; charset=utf-8',
+    'MIME-Version: 1.0',
+    '',
+    body
+  ]
+  
+  const message = messageParts.join('\n')
+  const encodedMessage = Buffer.from(message)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '')
+    
+  try {
+    await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: {
+        raw: encodedMessage
+      }
+    })
+    console.log('[Phase 4B] Email sent successfully!')
+  } catch (error) {
+    console.error('[Phase 4B] Error sending email:', error.message)
+    throw error
+  }
+}
