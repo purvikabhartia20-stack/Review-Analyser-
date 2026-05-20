@@ -36,7 +36,22 @@ function formatPulseTextForUI(rawText) {
   clean = clean.replace(/WHAT USERS ARE SAYING \(verbatim, anonymised\)/g, `<h2 style="${h2Style}">What Users Are Saying</h2>`)
   clean = clean.replace(/ACTION IDEAS/g, `<h2 style="${h2Style}">Action Ideas</h2>`)
   
-  // 4. Convert the [Category] "Quote" lines into beautiful HTML blockquotes
+  // 4. Convert Top Themes into readable UI cards
+  clean = clean.replace(/^(\d+\.) (.*?) — (\d+ reviews) \| Avg: (.*?) \| (.*?)$/gm, 
+    '<div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 15px; margin-bottom: 10px; border-radius: 8px;">' +
+      '<strong style="color: #0f172a; font-size: 16px;">$1 $2</strong><br/>' +
+      '<span style="color: #475569; font-size: 13px;">📊 $3 &nbsp;&nbsp;|&nbsp;&nbsp; ⭐ Avg: $4 &nbsp;&nbsp;|&nbsp;&nbsp; ⚠️ $5</span>' +
+    '</div>'
+  )
+
+  // 5. Convert Action Ideas into styled list items
+  clean = clean.replace(/^(\d+\.) ([^—<]+)$/gm, 
+    '<div style="margin-bottom: 12px; padding-left: 5px; font-size: 15px; color: #333;">' +
+      '<strong style="color: #00D09C; font-size: 16px; margin-right: 5px;">$1</strong> $2' +
+    '</div>'
+  )
+
+  // 6. Convert the [Category] "Quote" lines into beautiful HTML blockquotes
   clean = clean.replace(/^\[(.*?)\] "(.*?)"$/gm, 
     '<div style="background: #ffffff; border-left: 4px solid #00D09C; padding: 12px 15px; margin-bottom: 15px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
       '<strong style="display: block; color: #00D09C; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">$1</strong>' +
@@ -44,7 +59,7 @@ function formatPulseTextForUI(rawText) {
     '</div>'
   )
   
-  // 5. Replace remaining newlines with <br/>, but avoid adding <br/> right after our block tags
+  // 7. Replace remaining newlines with <br/>, but avoid adding <br/> right after our block tags
   clean = clean.replace(/\n/g, '<br/>')
   // Clean up double breaks around the headers and divs
   clean = clean.replace(/<\/h2><br\/><br\/>/g, '</h2>')
@@ -77,10 +92,16 @@ export async function createGoogleDoc(pulseText, weekLabel) {
 
   const htmlContent = `
     <html>
-      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #111; text-align: center; margin-bottom: 5px; font-size: 28px;">Groww Weekly Pulse</h1>
-        <h3 style="text-align: center; color: #777; margin-top: 0; font-weight: normal;">${weekLabel}</h3>
-        <div style="margin-top: 30px;">
+      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <table width="100%" cellpadding="20" cellspacing="0" border="0" style="background-color: #00D09C; border-radius: 8px;">
+          <tr>
+            <td align="center">
+              <h1 style="color: #ffffff; margin: 0; font-size: 32px;">Groww Weekly Pulse</h1>
+              <p style="color: #e6fffa; margin: 5px 0 0 0; font-size: 18px;">${weekLabel}</p>
+            </td>
+          </tr>
+        </table>
+        <div style="margin-top: 30px; padding: 0 20px;">
           ${formattedHtml}
         </div>
       </body>
