@@ -44,10 +44,11 @@ function formatPulseTextForUI(rawText) {
     '</div>'
   )
 
-  // 5. Convert Action Ideas into styled list items
-  clean = clean.replace(/^(\d+\.) ([^—<]+)$/gm, 
-    '<div style="margin-bottom: 12px; padding-left: 5px; font-size: 15px; color: #333;">' +
-      '<strong style="color: #00D09C; font-size: 16px; margin-right: 5px;">$1</strong> $2' +
+  // 5. Convert Action Ideas into styled cards (safe for email clients)
+  clean = clean.replace(/^(\d+)\. ([^—<]+)$/gm, 
+    '<div style="background: #ffffff; border: 1px solid #eaeaea; padding: 15px; margin-bottom: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">' +
+      '<div style="color: #00D09C; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">💡 Action Idea $1</div>' +
+      '<div style="color: #334155; font-size: 15px; line-height: 1.5;">$2</div>' +
     '</div>'
   )
 
